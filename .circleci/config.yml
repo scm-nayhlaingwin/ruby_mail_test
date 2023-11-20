@@ -47,6 +47,14 @@ jobs:
               sleep 1
             done
             echo Failed waiting for MySQL && exit 1
+      - run:
+          name: system update
+          command: |
+            gem update --system
+            bundle update --bundler 
+      - run:
+          name: Database setup
+          command: bundle exec rails db:schema:load --trace
       # Run rspec
       # - ruby/rspec-test
 workflows:

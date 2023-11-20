@@ -14,6 +14,7 @@ jobs:
           MYSQL_PASSWORD: passw0rd
     steps:
       - checkout
+      - ruby/install-deps
       - run:
       # Our primary container isn't MYSQL so run a sleep command until it's ready.
           name: Waiting for MySQL to be ready
@@ -30,12 +31,13 @@ jobs:
       - image: cimg/ruby:3.2.2-node
       - image: cimg/mysql:8.0
         environment:
-          MYSQL_ROOT_PASSWORD: rootpw
-          MYSQL_DATABASE: test_db
-          MYSQL_USER: user
-          MYSQL_PASSWORD: passw0rd
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: send_email_test
+          MYSQL_USER: root
+          MYSQL_PASSWORD: root
     steps:
       - checkout
+      - ruby/install-deps
       - run:
       # Our primary container isn't MYSQL so run a sleep command until it's ready.
           name: Waiting for MySQL to be ready
@@ -47,11 +49,11 @@ jobs:
               sleep 1
             done
             echo Failed waiting for MySQL && exit 1
-      - run:
-          name: system update
-          command: |
-            gem update --system
-            bundle update --bundler 
+      # - run:
+      #     name: system update
+      #     command: |
+      #       gem update --system
+      #       bundle update --bundler 
       - run:
           name: Database setup
           command: bundle exec rails db:schema:load --trace

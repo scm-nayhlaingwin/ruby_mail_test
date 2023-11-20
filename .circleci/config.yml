@@ -50,9 +50,10 @@ jobs:
       # Run rspec
       # - ruby/rspec-test
 workflows:
-  build-deploy:
+  version: 2
+  build_and_test:
     jobs:
       - build
       - test:
-        requires:
-          - build
+          requires:
+            - build

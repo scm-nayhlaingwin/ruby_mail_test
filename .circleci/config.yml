@@ -1,9 +1,15 @@
 version: 2.1
-orbs:
+orbs: 
   browser-tools: circleci/browser-tools@1.2.3
   ruby: circleci/ruby@2.1.0
 jobs:
   build:
+    docker:
+      - image: cimg/ruby:3.2.2-node
+    steps:
+      - checkout
+      - ruby/install-deps
+  test:
     docker:
       - image: cimg/ruby:3.2.2-node
       - image: cimg/mysql:8.0
@@ -12,26 +18,30 @@ jobs:
           MYSQL_DATABASE: test_db
           MYSQL_USER: user
           MYSQL_PASSWORD: passw0rd
-
     steps:
       - checkout
+      - ruby/install-deps
       - run:
       # Our primary container isn't MYSQL so run a sleep command until it's ready.
-          name: Waiting for MySQL to be ready
-          command: |
-            for i in `seq 1 10`;
-            do
-              nc -z 127.0.0.1 3306 && echo Success && exit 0
-              echo -n .
-              sleep 1
-            done
-            echo Failed waiting for MySQL && exit 1
+        name: Waiting for MySQL to be ready
+        command: |
+          for i in `seq 1 10`;
+          do
+            nc -z 127.0.0.1 3306 && echo Success && exit 0
+            echo -n .
+            sleep 1
+          done
+          echo Failed waiting for MySQL && exit 1
       - run:
-          name: Install MySQL CLI; Import dummy data; run an example query
-          command: |
-            mysql -h 127.0.0.1 -u user -p passw0rd test_db < sql-data/dummy.sql
-            mysql -h 127.0.0.1 -u user -p passw0rd --execute="SELECT * FROM test_db.Persons"
+        name: Database setup
+        command: bundle exec rails db:schema:load --trace
+      # Run rspec
+      - ruby/rspec-test
 workflows:
-  build-deploy:
+  version: 2
+  build_and_test:
     jobs:
       - build
+      - test:
+          requires:
+            - build

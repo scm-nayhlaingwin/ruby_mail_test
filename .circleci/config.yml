@@ -9,6 +9,11 @@ jobs:
     steps:
       - checkout
       - ruby/install-deps
+      - run:
+          name: Check Ruby&Rails
+          command: |
+            ruby --version
+            rails --version
   test:
     docker:
       - image: cimg/ruby:3.2.2-node

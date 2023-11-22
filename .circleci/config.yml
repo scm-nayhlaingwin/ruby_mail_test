@@ -13,6 +13,7 @@ jobs:
           name: Check Ruby&Rails
           command: |
             ruby --version
+            gem install rails
             rails --version
   test:
     docker:
@@ -47,7 +48,9 @@ jobs:
             mysql -h 127.0.0.1 -u user -ppassw0rd --execute="SELECT * FROM test_db.Persons"
       - run:
           name: Setup DB
-          command: rails db:create db:schema:load --trace
+          command: |
+            gem install rails
+            rails db:create db:schema:load --trace
       # Run rspec
       # - ruby/rspec-test
 workflows:

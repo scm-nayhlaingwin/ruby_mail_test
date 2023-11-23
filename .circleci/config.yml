@@ -13,7 +13,7 @@ jobs:
           name: Check Ruby&Rails
           command: |
             ruby --version
-            gem install rails
+            bundle install
             rails --version
   test:
     docker:
@@ -54,14 +54,13 @@ jobs:
       #       sudo apt-get update
       #       sudo apt-get install -y default-mysql-client
       #       mysql --version
-      #       mysql -h 127.0.0.1 -u user -ppassw0rd test_db < sql-data/dummy.sql
-      #       mysql -h 127.0.0.1 -u user -ppassw0rd --execute="SELECT * FROM test_db.Persons"
+      #       mysql -h 127.0.0.1 -u user -ppassw0rd send_email_test < sql-data/dummy.sql
+      #       mysql -h 127.0.0.1 -u user -ppassw0rd --execute="SELECT * FROM send_email_test.Persons"
       - run:
-          name: Setup DB
+          name: Bundle Install & DB Setup
           command: |
-            gem install rails
             rails db:create db:migrate
-            echo DB creation sucess!!!
+            echo DB creation success!!!
       # Run rspec
       # - ruby/rspec-test
 workflows:

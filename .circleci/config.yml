@@ -18,12 +18,22 @@ jobs:
   test:
     docker:
       - image: cimg/ruby:3.2.2-node
-      - image: cimg/mysql:8.0
         environment:
-          MYSQL_ROOT_PASSWORD: rootpw
-          MYSQL_DATABASE: test_db
+          RAILS_ENV: test
+          DB_USER: user
+          DB_PASSWORD: passw0rd
+          DB_HOST: 127.0.0.1
+      - image: cimg/mysql:8.0
+        command: |
+          mysqld --default-authentication-plugin=mysql_native_password
+        environment:
+          MYSQL_ALLOW_EMPTY_PASSWORD: 'true'
+          MYSQL_DATABASE: Send_Email
+          MYSQL_HOST: 127.0.0.1
+          MYSQL_ROOT_PASSWORD: root
           MYSQL_USER: user
           MYSQL_PASSWORD: passw0rd
+          MYSQL_ROOT_HOST: '%'
     steps:
       - checkout
       - ruby/install-deps

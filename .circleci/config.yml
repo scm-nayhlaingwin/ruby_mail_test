@@ -50,7 +50,7 @@ jobs:
           name: Setup DB
           command: |
             gem install rails
-            rails db:create db:schema:load --trace
+            rails db:create db:migrate
       # Run rspec
       # - ruby/rspec-test
 workflows:

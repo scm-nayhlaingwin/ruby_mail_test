@@ -1,3 +1,4 @@
+require_relative '../services/user_services.rb'
 class UsersController < ApplicationController
   before_action :set_user, only: %i[ show edit update destroy ]
 
@@ -21,13 +22,12 @@ class UsersController < ApplicationController
 
   # POST /users or /users.json
   def create
-    @user = User.new(user_params)
-
     respond_to do |format|
-      if @user.save
-        Rails.logger.info "Mail sending started!!!!!"
+      user_services = UserServices.new(user_params)
+      @user = user_services.create
+      if @user
         UserMailer.welcome_email(@user).deliver_now
-        Rails.logger.info "Mail sending end!!!!!"
+
         format.html { redirect_to user_url(@user), notice: "User was successfully created." }
         format.json { render :show, status: :created, location: @user }
       else
